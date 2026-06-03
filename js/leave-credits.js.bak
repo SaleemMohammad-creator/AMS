@@ -1,0 +1,1671 @@
+/* =========================
+   Storage
+========================= */
+
+let leaveRequests =
+
+Storage.get(
+    CONFIG.KEYS.LEAVE_REQUESTS
+);
+
+let staffData =
+
+Storage.get(
+    CONFIG.KEYS.STAFF
+);
+
+
+/* =========================
+   DOM
+========================= */
+
+const leaveTableBody =
+document.getElementById(
+    'leaveTableBody'
+);
+
+const ledgerBody =
+document.getElementById(
+    'ledgerBody'
+);
+
+const searchInput =
+document.getElementById(
+    'searchInput'
+);
+
+const monthFilter =
+document.getElementById(
+    'monthFilter'
+);
+
+
+/* Cards */
+
+const takenLeavesCard =
+document.getElementById(
+    'takenLeavesCard'
+);
+
+const balanceCard =
+document.getElementById(
+    'balanceCard'
+);
+
+const pendingCard =
+document.getElementById(
+    'pendingCard'
+);
+
+const lopCard =
+document.getElementById(
+    'lopCard'
+);
+
+const alertCard =
+document.getElementById(
+    'alertCard'
+);
+
+
+/* =========================
+   Leave Modal
+========================= */
+
+const leaveModal =
+document.getElementById(
+    'leaveModal'
+);
+
+const leaveForm =
+document.getElementById(
+    'leaveForm'
+);
+
+const openLeaveModalBtn =
+document.getElementById(
+    'openLeaveModalBtn'
+);
+
+const closeLeaveModal =
+document.getElementById(
+    'closeLeaveModal'
+);
+
+const cancelLeaveBtn =
+document.getElementById(
+    'cancelLeaveBtn'
+);
+
+
+/* =========================
+   Benefit Modal
+========================= */
+
+const benefitModal =
+document.getElementById(
+    'benefitModal'
+);
+
+const benefitForm =
+document.getElementById(
+    'benefitForm'
+);
+
+const openBenefitModalBtn =
+document.getElementById(
+    'openBenefitModalBtn'
+);
+
+const closeBenefitModal =
+document.getElementById(
+    'closeBenefitModal'
+);
+
+const cancelBenefitBtn =
+document.getElementById(
+    'cancelBenefitBtn'
+);
+
+
+/* =========================
+   Employee Dropdowns
+========================= */
+
+const employeeSelect =
+document.getElementById(
+    'employeeSelect'
+);
+
+const benefitEmployee =
+document.getElementById(
+    'benefitEmployee'
+);
+
+
+/* =========================
+   Modal Controls
+========================= */
+
+function openModal(
+    modal
+){
+
+    modal?.classList.add(
+        'show'
+    );
+}
+
+function closeModal(
+    modal
+){
+
+    modal?.classList.remove(
+        'show'
+    );
+}
+
+
+/* Leave Modal */
+
+openLeaveModalBtn
+?.addEventListener(
+
+    'click',
+
+    () =>
+
+    openModal(
+        leaveModal
+    )
+);
+
+closeLeaveModal
+?.addEventListener(
+
+    'click',
+
+    () =>
+
+    closeModal(
+        leaveModal
+    )
+);
+
+cancelLeaveBtn
+?.addEventListener(
+
+    'click',
+
+    () =>
+
+    closeModal(
+        leaveModal
+    )
+);
+
+
+/* Benefit Modal */
+
+openBenefitModalBtn
+?.addEventListener(
+
+    'click',
+
+    () =>
+
+    openModal(
+        benefitModal
+    )
+);
+
+closeBenefitModal
+?.addEventListener(
+
+    'click',
+
+    () =>
+
+    closeModal(
+        benefitModal
+    )
+);
+
+cancelBenefitBtn
+?.addEventListener(
+
+    'click',
+
+    () =>
+
+    closeModal(
+        benefitModal
+    )
+);
+
+
+/* Outside Click */
+
+window.addEventListener(
+
+    'click',
+
+    e => {
+
+        if(
+            e.target ===
+            leaveModal
+        ){
+
+            closeModal(
+                leaveModal
+            );
+        }
+
+        if(
+            e.target ===
+            benefitModal
+        ){
+
+            closeModal(
+                benefitModal
+            );
+        }
+    }
+);
+
+
+/* =========================
+   Employee Dropdown Load
+========================= */
+
+function loadEmployees(){
+
+    if(
+        !employeeSelect ||
+        !benefitEmployee
+    ) return;
+
+    employeeSelect.innerHTML =
+
+    `
+    <option value="">
+        Select Employee
+    </option>
+    `;
+
+    benefitEmployee.innerHTML =
+
+    `
+    <option value="">
+        Select Employee
+    </option>
+    `;
+
+    staffData.forEach(
+        employee => {
+
+        const option1 =
+
+        document.createElement(
+            'option'
+        );
+
+        option1.value =
+            employee.id;
+
+        option1.textContent =
+
+            `${employee.id}
+            -
+            ${employee.name}`;
+
+        employeeSelect
+        .appendChild(
+            option1
+        );
+
+        const option2 =
+
+        option1.cloneNode(
+            true
+        );
+
+        benefitEmployee
+        .appendChild(
+            option2
+        );
+    });
+}
+
+
+/* =========================
+   Save Data
+========================= */
+
+function saveData(){
+
+    Storage.set(
+
+        CONFIG.KEYS.LEAVE_REQUESTS,
+
+        leaveRequests
+    );
+}
+
+
+/* =========================
+   Carry Forward
+========================= */
+
+function getCarryForward(
+    balance
+){
+
+    return Math.min(
+
+        balance,
+
+        CONFIG.LEAVE
+        .MAX_CARRY_FORWARD
+    );
+}
+
+
+/* =========================
+   Filters
+========================= */
+
+searchInput
+?.addEventListener(
+
+    'input',
+
+    () => {
+
+        renderLeaveTable();
+        updateCards();
+        renderLedger();
+    }
+);
+
+monthFilter
+?.addEventListener(
+
+    'change',
+
+    () => {
+
+        renderLeaveTable();
+        updateCards();
+        renderLedger();
+    }
+);
+
+
+/* =========================
+   Init
+========================= */
+
+loadEmployees();
+
+/* =========================
+   Apply Leave
+========================= */
+
+leaveForm
+?.addEventListener(
+
+    'submit',
+
+    applyLeave
+);
+
+function applyLeave(e){
+
+    e.preventDefault();
+
+    const empId =
+
+    employeeSelect.value;
+
+    const employee =
+
+    staffData.find(
+
+        emp =>
+
+        emp.id ===
+        empId
+    );
+
+    if(
+        !employee
+    ){
+
+        alert(
+            'Select Employee'
+        );
+
+        return;
+    }
+
+    const leaveType =
+
+    document
+    .getElementById(
+        'leaveType'
+    )
+    .value;
+
+    const fromDate =
+
+    document
+    .getElementById(
+        'fromDate'
+    )
+    .value;
+
+    const toDate =
+
+    document
+    .getElementById(
+        'toDate'
+    )
+    .value;
+
+    const remarks =
+
+    document
+    .getElementById(
+        'leaveRemarks'
+    )
+    .value
+    .trim();
+
+    /* Days */
+
+    let days =
+
+    Utils.calculateDays(
+
+        fromDate,
+
+        toDate
+    );
+
+    /* Half Day */
+
+    if(
+
+        leaveType ===
+        'Half Day'
+
+    ){
+
+        days =
+
+        CONFIG.LEAVE
+        .HALF_DAY;
+    }
+
+    /* Deduction */
+
+    let creditChange =
+
+        -days;
+
+    /* Backdated */
+
+    const today =
+
+    new Date()
+    .toISOString()
+    .split('T')[0];
+
+    let status =
+        'Pending';
+
+    if(
+
+        fromDate <
+        today
+
+    ){
+
+        status =
+            'Backdated Pending';
+    }
+
+    /* Request */
+
+    const request = {
+
+        id:
+
+        Utils.randomId(),
+
+        empId:
+            employee.id,
+
+        name:
+            employee.name,
+
+        type:
+            leaveType,
+
+        from:
+            fromDate,
+
+        to:
+            toDate,
+
+        days,
+
+        creditChange,
+
+        status,
+
+        remarks,
+
+        category:
+            'Leave'
+    };
+
+    leaveRequests.push(
+        request
+    );
+
+    saveData();
+
+    leaveForm.reset();
+
+    closeModal(
+        leaveModal
+    );
+
+    renderLeaveTable();
+
+    updateCards();
+
+    renderLedger();
+}
+
+
+/* =========================
+   Special Benefit
+========================= */
+
+benefitForm
+?.addEventListener(
+
+    'submit',
+
+    applyBenefit
+);
+
+function applyBenefit(e){
+
+    e.preventDefault();
+
+    const empId =
+
+    benefitEmployee.value;
+
+    const employee =
+
+    staffData.find(
+
+        emp =>
+
+        emp.id ===
+        empId
+    );
+
+    if(
+        !employee
+    ){
+
+        alert(
+            'Select Employee'
+        );
+
+        return;
+    }
+
+    const workedOn =
+
+    document
+    .getElementById(
+        'workedOn'
+    )
+    .value;
+
+    const benefitType =
+
+    document
+    .getElementById(
+        'benefitType'
+    )
+    .value;
+
+    const benefitDate =
+
+    document
+    .getElementById(
+        'benefitDate'
+    )
+    .value;
+
+    const remarks =
+
+    document
+    .getElementById(
+        'benefitRemarks'
+    )
+    .value
+    .trim();
+
+    let creditChange =
+        0;
+
+    /* Extra Credit */
+
+    if(
+
+        benefitType ===
+        'Extra Credit (+1)'
+
+    ){
+
+        creditChange = 1;
+    }
+
+    const request = {
+
+        id:
+
+        Utils.randomId(),
+
+        empId:
+            employee.id,
+
+        name:
+            employee.name,
+
+        type:
+            workedOn,
+
+        benefit:
+            benefitType,
+
+        from:
+            benefitDate,
+
+        to:
+            benefitDate,
+
+        days:
+            1,
+
+        creditChange,
+
+        status:
+            'Benefit',
+
+        remarks,
+
+        category:
+            'Benefit'
+    };
+
+    leaveRequests.push(
+        request
+    );
+
+    saveData();
+
+    benefitForm.reset();
+
+    closeModal(
+        benefitModal
+    );
+
+    renderLeaveTable();
+
+    updateCards();
+
+    renderLedger();
+}
+
+
+/* =========================
+   Delete
+========================= */
+
+window.deleteLeave =
+
+function(id){
+
+    if(
+
+        confirm(
+            'Delete this record?'
+        )
+
+    ){
+
+        leaveRequests =
+
+        leaveRequests.filter(
+
+            item =>
+
+            item.id !== id
+        );
+
+        saveData();
+
+        renderLeaveTable();
+
+        updateCards();
+
+        renderLedger();
+    }
+};
+
+
+/* =========================
+   Approval
+========================= */
+
+window.approveLeave =
+
+function(id){
+
+    const request =
+
+    leaveRequests.find(
+
+        item =>
+
+        item.id === id
+    );
+
+    if(
+        request
+    ){
+
+        request.status =
+            'Approved';
+
+        saveData();
+
+        renderLeaveTable();
+
+        updateCards();
+
+        renderLedger();
+    }
+};
+
+window.rejectLeave =
+
+function(id){
+
+    const request =
+
+    leaveRequests.find(
+
+        item =>
+
+        item.id === id
+    );
+
+    if(
+        request
+    ){
+
+        request.status =
+            'Rejected';
+
+        request.creditChange =
+            0;
+
+        saveData();
+
+        renderLeaveTable();
+
+        updateCards();
+
+        renderLedger();
+    }
+};
+
+window.markLOP =
+
+function(id){
+
+    const request =
+
+    leaveRequests.find(
+
+        item =>
+
+        item.id === id
+    );
+
+    if(
+        request
+    ){
+
+        request.status =
+            'LOP';
+
+        saveData();
+
+        renderLeaveTable();
+
+        updateCards();
+
+        renderLedger();
+    }
+};
+
+
+/* =========================
+   Employee Balance
+========================= */
+
+function calculateEmployeeBalance(
+    empId
+){
+
+    let approvedUsed =
+        0;
+
+    let approvedBenefit =
+        0;
+
+    leaveRequests
+    .filter(
+
+        item =>
+
+        item.empId ===
+        empId
+    )
+    .forEach(
+        item => {
+
+        /* Approved Leave */
+
+        if(
+
+            item.status ===
+            'Approved'
+
+            &&
+
+            item.creditChange < 0
+
+        ){
+
+            approvedUsed +=
+
+            Math.abs(
+                item.creditChange
+            );
+        }
+
+        /* Benefit */
+
+        if(
+
+            item.creditChange > 0
+
+        ){
+
+            approvedBenefit +=
+
+            item.creditChange;
+        }
+    });
+
+    /* Monthly Credit */
+
+    let balance =
+
+        CONFIG.LEAVE
+        .MONTHLY_CREDIT
+
+        +
+
+        approvedBenefit
+
+        -
+
+        approvedUsed;
+
+    /* Carry Limit */
+
+    balance =
+
+    getCarryForward(
+        balance
+    );
+
+    return Number(
+        balance.toFixed(1)
+    );
+}
+
+/* =========================
+   Leave Table
+========================= */
+
+function renderLeaveTable(){
+
+    let filtered =
+
+        [...leaveRequests];
+
+    const search =
+
+        (
+            searchInput?.value || ''
+        )
+        .toLowerCase()
+        .trim();
+
+    const month =
+
+        monthFilter?.value || '';
+
+    /* Search */
+
+    if(search){
+
+        filtered =
+
+        filtered.filter(
+            item =>
+
+            item.empId
+            ?.toLowerCase()
+            .includes(
+                search
+            )
+
+            ||
+
+            item.name
+            ?.toLowerCase()
+            .includes(
+                search
+            )
+        );
+    }
+
+    /* Month */
+
+    if(month){
+
+        filtered =
+
+        filtered.filter(
+            item =>
+
+            item.from
+            ?.startsWith(
+                month
+            )
+        );
+    }
+
+    /* Empty */
+
+    if(
+        filtered.length === 0
+    ){
+
+        leaveTableBody.innerHTML =
+
+        `
+        <tr>
+
+            <td
+                colspan="10"
+                class="empty-state"
+            >
+                No leave records found
+            </td>
+
+        </tr>
+        `;
+
+        return;
+    }
+
+    leaveTableBody.innerHTML =
+
+    filtered.map(
+        item => {
+
+        /* Status */
+
+        let badgeClass =
+            '';
+
+        if(
+            item.status ===
+            'Pending'
+        )
+            badgeClass =
+            'status-pending';
+
+        if(
+            item.status ===
+            'Approved'
+        )
+            badgeClass =
+            'status-approved';
+
+        if(
+            item.status ===
+            'Rejected'
+        )
+            badgeClass =
+            'status-rejected';
+
+        if(
+            item.status ===
+            'LOP'
+        )
+            badgeClass =
+            'status-lop';
+
+        if(
+            item.status ===
+            'Benefit'
+        )
+            badgeClass =
+            'status-benefit';
+
+        if(
+            item.status ===
+            'Backdated Pending'
+        )
+            badgeClass =
+            'status-backdated';
+
+        /* Alerts */
+
+        let alertText =
+            '-';
+
+        let alertClass =
+            '';
+
+        const balance =
+
+        calculateEmployeeBalance(
+            item.empId
+        );
+
+        if(
+            balance >= 10
+        ){
+
+            alertText =
+                'Warning';
+
+            alertClass =
+                'alert-warning';
+        }
+
+        if(
+            balance >= 15
+        ){
+
+            alertText =
+                'High';
+
+            alertClass =
+                'alert-high';
+        }
+
+        if(
+            balance >=
+            CONFIG.LEAVE
+            .MAX_CARRY_FORWARD
+        ){
+
+            alertText =
+                'Carry Limit';
+
+            alertClass =
+                'alert-limit';
+        }
+
+        /* Credit */
+
+        let creditClass =
+            'credit-minus';
+
+        if(
+            item.creditChange > 0
+        ){
+
+            creditClass =
+                'credit-plus';
+        }
+
+        if(
+            item.status ===
+            'LOP'
+        ){
+
+            creditClass =
+                'credit-lop';
+        }
+
+        return `
+
+        <tr>
+
+            <td>
+                ${item.empId}
+            </td>
+
+            <td>
+                ${item.name}
+            </td>
+
+            <td>
+
+                ${
+                    item.category ===
+                    'Benefit'
+
+                    ?
+
+                    item.benefit
+
+                    :
+
+                    item.type
+                }
+
+            </td>
+
+            <td>
+                ${item.from}
+            </td>
+
+            <td>
+                ${item.to}
+            </td>
+
+            <td>
+                ${item.days}
+            </td>
+
+            <td
+                class="${creditClass}"
+            >
+                ${item.creditChange}
+            </td>
+
+            <td>
+
+                <span
+                    class="
+                    status-badge
+                    ${badgeClass}
+                    "
+                >
+                    ${item.status}
+                </span>
+
+            </td>
+
+            <td>
+
+                <span
+                    class="
+                    status-badge
+                    ${alertClass}
+                    "
+                >
+                    ${alertText}
+                </span>
+
+            </td>
+
+            <td>
+
+                <div
+                    class="
+                    action-group
+                    "
+                >
+
+                    ${
+                        item.status
+                        ?.includes(
+                            'Pending'
+                        )
+
+                        ?
+
+                        `
+                        <button
+                            class="
+                            approve-btn
+                            "
+                            onclick="
+                            approveLeave(
+                            ${item.id}
+                            )
+                            "
+                        >
+                            Approve
+                        </button>
+
+                        <button
+                            class="
+                            reject-btn
+                            "
+                            onclick="
+                            rejectLeave(
+                            ${item.id}
+                            )
+                            "
+                        >
+                            Reject
+                        </button>
+
+                        <button
+                            class="
+                            lop-btn
+                            "
+                            onclick="
+                            markLOP(
+                            ${item.id}
+                            )
+                            "
+                        >
+                            LOP
+                        </button>
+                        `
+
+                        :
+
+                        `
+                        <button
+                            class="
+                            delete-btn
+                            "
+                            onclick="
+                            deleteLeave(
+                            ${item.id}
+                            )
+                            "
+                        >
+                            Delete
+                        </button>
+                        `
+                    }
+
+                </div>
+
+            </td>
+
+        </tr>
+        `;
+    }).join('');
+}
+
+/* =========================
+   Cards
+========================= */
+
+function updateCards(){
+
+    /* Approved Leaves */
+
+    const taken =
+
+    leaveRequests
+    .filter(
+
+        item =>
+
+        item.status ===
+        'Approved'
+
+        &&
+
+        item.creditChange < 0
+    )
+    .reduce(
+
+        (
+            total,
+            item
+        ) =>
+
+        total +
+
+        Math.abs(
+            item.creditChange || 0
+        ),
+
+        0
+    );
+
+
+    /* Pending */
+
+    const pending =
+
+    leaveRequests.filter(
+
+        item =>
+
+        item.status
+        ?.includes(
+            'Pending'
+        )
+
+    ).length;
+
+
+    /* LOP */
+
+    const lop =
+
+    leaveRequests.filter(
+
+        item =>
+
+        item.status ===
+        'LOP'
+
+    ).length;
+
+
+    /* Alerts */
+
+    let alerts = 0;
+
+    staffData.forEach(
+        employee => {
+
+        const empBalance =
+
+        calculateEmployeeBalance(
+            employee.id
+        );
+
+        if(
+            empBalance >= 10
+        ){
+
+            alerts++;
+        }
+    });
+
+
+    /* Balance */
+
+    let balance = 0;
+
+    /* No Employees */
+
+    if(
+
+        staffData.length > 0
+
+    ){
+
+        const totalBalance =
+
+        staffData.reduce(
+
+            (
+                total,
+                emp
+            ) =>
+
+            total +
+
+            calculateEmployeeBalance(
+                emp.id
+            ),
+
+            0
+        );
+
+        /* Average Balance */
+
+        balance =
+
+        (
+            totalBalance /
+
+            staffData.length
+        )
+        .toFixed(1);
+    }
+
+
+    /* Cards */
+
+    takenLeavesCard.textContent =
+        taken;
+
+    balanceCard.textContent =
+        balance;
+
+    pendingCard.textContent =
+        pending;
+
+    lopCard.textContent =
+        lop;
+
+    alertCard.textContent =
+        alerts;
+}
+
+
+/* =========================
+   Ledger
+========================= */
+
+function renderLedger(){
+
+    ledgerBody.innerHTML =
+        '';
+
+    const grouped =
+        {};
+
+    leaveRequests.forEach(
+        item => {
+
+        const month =
+
+            item.from
+            ?.slice(
+                0,
+                7
+            );
+
+        if(
+            !month
+        ) return;
+
+        if(
+            !grouped[month]
+        ){
+
+            grouped[month] = {
+
+                opening:0,
+
+                added:
+
+                CONFIG.LEAVE
+                .MONTHLY_CREDIT,
+
+                used:0,
+
+                expired:0
+            };
+        }
+
+        /* Used */
+
+        if(
+
+            item.creditChange < 0
+
+            &&
+
+            item.status ===
+            'Approved'
+
+        ){
+
+            grouped[month]
+            .used +=
+
+            Math.abs(
+                item.creditChange
+            );
+        }
+
+        /* Benefit */
+
+        if(
+            item.creditChange > 0
+        ){
+
+            grouped[month]
+            .added +=
+
+            item.creditChange;
+        }
+    });
+
+    Object.keys(
+        grouped
+    ).forEach(
+        month => {
+
+        const row =
+            grouped[month];
+
+        let closing =
+
+            row.opening +
+
+            row.added -
+
+            row.used;
+
+        /* Carry Limit */
+
+        if(
+
+            closing >
+
+            CONFIG.LEAVE
+            .MAX_CARRY_FORWARD
+
+        ){
+
+            row.expired =
+
+            closing -
+
+            CONFIG.LEAVE
+            .MAX_CARRY_FORWARD;
+
+            closing =
+
+            CONFIG.LEAVE
+            .MAX_CARRY_FORWARD;
+        }
+
+        closing =
+            closing.toFixed(
+                1
+            );
+
+        ledgerBody.innerHTML +=
+
+        `
+        <tr>
+
+            <td>
+                ${month}
+            </td>
+
+            <td
+                class="
+                opening-credit
+                "
+            >
+                ${row.opening}
+            </td>
+
+            <td
+                class="
+                added-credit
+                "
+            >
+                +${row.added}
+            </td>
+
+            <td
+                class="
+                used-credit
+                "
+            >
+                -${row.used}
+            </td>
+
+            <td
+                class="
+                expired-credit
+                "
+            >
+                -${row.expired}
+            </td>
+
+            <td
+                class="
+                closing-credit
+                "
+            >
+                ${closing}
+            </td>
+
+        </tr>
+        `;
+    });
+}
+
+
+/* =========================
+   Init
+========================= */
+
+renderLeaveTable();
+
+updateCards();
+
+renderLedger();

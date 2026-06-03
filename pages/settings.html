@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Settings | AMS
+    </title>
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+
+
+    <!-- CSS -->
+
+    <link
+        rel="stylesheet"
+        href="../css/sidebar.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/settings.css"
+    >
+
+    <!-- Font Awesome -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+
+    <div id="sidebar-container">
+    </div>
+
+    <!-- Main -->
+
+    <main class="main-content">
+
+        <!-- Header -->
+
+        <div class="settings-header">
+
+            <div>
+
+                <h1>
+                    Settings
+                </h1>
+
+                <p>
+                    Manage AMS preferences and system configuration
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- Grid -->
+
+        <div class="settings-grid">
+
+            <!-- Profile -->
+
+            <div class="settings-card">
+
+                <div class="card-title">
+
+                    <i
+                        class="fa-solid fa-user-gear"
+                    ></i>
+
+                    <h3>
+                        Profile Settings
+                    </h3>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Admin Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="adminName"
+                        placeholder="Admin name"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="adminEmail"
+                        placeholder="Email"
+                    >
+
+                </div>
+
+                <button
+                    class="save-btn"
+                    id="saveProfileBtn"
+                >
+
+                    Save Profile
+
+                </button>
+
+            </div>
+
+            <!-- Appearance -->
+
+            <div class="settings-card">
+
+                <div class="card-title">
+
+                    <i
+                        class="fa-solid fa-palette"
+                    ></i>
+
+                    <h3>
+                        Appearance
+                    </h3>
+
+                </div>
+
+                <div class="toggle-row">
+
+                    <span>
+                        Dark Mode
+                    </span>
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            id="darkModeToggle"
+                        >
+
+                        <span
+                            class="slider"
+                        ></span>
+
+                    </label>
+
+                </div>
+
+                <div class="toggle-row">
+
+                    <span>
+                        Toast Notifications
+                    </span>
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            id="toastToggle"
+                            checked
+                        >
+
+                        <span
+                            class="slider"
+                        ></span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+            <!-- Attendance Rules -->
+
+            <div class="settings-card">
+
+                <div class="card-title">
+
+                    <i
+                        class="fa-solid fa-clock"
+                    ></i>
+
+                    <h3>
+                        Attendance Rules
+                    </h3>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Full Day Hours
+                    </label>
+
+                    <input
+                        type="text"
+                        id="fullDayHours"
+                        value="8h 15m"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Late Login Time
+                    </label>
+
+                    <input
+                        type="time"
+                        id="lateLoginTime"
+                        value="09:30"
+                    >
+
+                </div>
+
+                <button
+                    class="save-btn"
+                    id="saveRulesBtn"
+                >
+
+                    Save Rules
+
+                </button>
+
+            </div>
+
+            
+            <!-- Payroll Rules -->
+            <div class="settings-card">
+                <div class="card-title"><i class="fa-solid fa-money-check-dollar"></i><h3>Payroll Rules</h3></div>
+                <div class="form-group"><label>Holiday Worked</label><input type="text" value="2x OT" disabled></div>
+                <div class="form-group"><label>Week-Off Rule</label><select id="weekOffRule"><option value="double_ot">2x OT</option><option value="comp_off">Comp Off</option></select></div>
+                <div class="toggle-row"><span>Enable LOP</span><label class="switch"><input type="checkbox" id="lopEnabled" checked><span class="slider"></span></label></div>
+                <button class="save-btn" id="savePayrollRulesBtn">Save Payroll Rules</button>
+            </div>
+
+            <!-- Security -->
+
+            <div class="settings-card">
+
+                <div class="card-title">
+
+                    <i
+                        class="fa-solid fa-shield-halved"
+                    ></i>
+
+                    <h3>
+                        Security
+                    </h3>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        New Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="newPassword"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Confirm Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                    >
+
+                </div>
+
+                <button
+                    class="save-btn"
+                    id="savePasswordBtn"
+                >
+
+                    Update Password
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Toast -->
+
+    <div id="toastContainer"></div>
+
+    <!-- JS -->
+
+    <script src="../js/config.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/permissions.js"></script>
+<script src="../js/sidebar.js"></script>
+    <script src="../js/toast.js"></script>
+    <script src="../js/settings.js"></script>
+
+</body>
+
+</html>

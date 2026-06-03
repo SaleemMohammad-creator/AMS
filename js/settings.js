@@ -1,518 +1,214 @@
-/* =========================
-   Default Settings
-========================= */
+document.addEventListener(
+'DOMContentLoaded',
+() => {
 
-let settingsData =
+    const defaultSettings = {
 
-Storage.get(
-    CONFIG.KEYS.SETTINGS
-);
+        profile:{
+            adminName:'',
+            adminEmail:'',
+            companyName:'',
+            companyLogo:''
+        },
 
-if(
+        attendance:{
+            fullDayHours:9,
+            halfDayHours:4,
+            lateLoginTime:'09:15',
+            graceMinutes:10,
+            minOtMinutes:30
+        },
 
-    !settingsData ||
+        payroll:{
+            currency:'INR',
+            weekOffRule:'Sunday',
+            lopEnabled:true
+        },
 
-    Object.keys(
-        settingsData
-    ).length === 0
-
-){
-
-    settingsData = {
-
-        username:'Admin',
-
-        email:'admin@gmail.com',
-
-        password:'12345',
-
-        theme:'light',
-
-        compactSidebar:false,
-
-        workingHours:9,
-
-        otLimit:2,
-
-        currency:'INR',
-
-        profileImage:
-        'https://i.pravatar.cc/200'
+        appearance:{
+            darkMode:false,
+            toastNotifications:true,
+            compactSidebar:false
+        }
     };
 
-    Storage.set(
+    let settings =
 
-        CONFIG.KEYS.SETTINGS,
-
-        settingsData
-    );
-}
-
-
-/* =========================
-   Elements
-========================= */
-
-const username =
-document.getElementById(
-    'username'
-);
-
-const email =
-document.getElementById(
-    'email'
-);
-
-const password =
-document.getElementById(
-    'password'
-);
-
-const confirmPassword =
-document.getElementById(
-    'confirmPassword'
-);
-
-const workingHours =
-document.getElementById(
-    'workingHours'
-);
-
-const otLimit =
-document.getElementById(
-    'otLimit'
-);
-
-const currency =
-document.getElementById(
-    'currency'
-);
-
-const darkModeToggle =
-document.getElementById(
-    'darkModeToggle'
-);
-
-const compactSidebarToggle =
-document.getElementById(
-    'compactSidebarToggle'
-);
-
-const saveSettingsBtn =
-document.getElementById(
-    'saveSettingsBtn'
-);
-
-const profilePreview =
-document.getElementById(
-    'profilePreview'
-);
-
-const profileUpload =
-document.getElementById(
-    'profileUpload'
-);
-
-
-/* =========================
-   Load Settings
-========================= */
-
-function loadSettings(){
-
-    username.value =
-        settingsData.username;
-
-    email.value =
-        settingsData.email;
-
-    password.value =
-        settingsData.password;
-
-    confirmPassword.value =
-        settingsData.password;
-
-    workingHours.value =
-        settingsData.workingHours;
-
-    otLimit.value =
-        settingsData.otLimit;
-
-    currency.value =
-        settingsData.currency;
-
-    profilePreview.src =
-        settingsData.profileImage;
-
-    /* Profile */
-
-    document
-    .getElementById(
-        'profileName'
-    )
-    .innerText =
-
-    settingsData.username;
-
-    /* Theme */
-
-    if(
-
-        settingsData.theme ===
-        'dark'
-
-    ){
-
-        document.body
-        .classList.add(
-            'dark-mode'
+        Storage.get(
+            CONFIG.KEYS.SETTINGS,
+            defaultSettings
         );
+
+    loadSettings();
+
+    function loadSettings(){
+
+        adminName.value =
+        settings.profile.adminName;
+
+        adminEmail.value =
+        settings.profile.adminEmail;
+
+        companyName.value =
+        settings.profile.companyName;
+
+        fullDayHours.value =
+        settings.attendance.fullDayHours;
+
+        halfDayHours.value =
+        settings.attendance.halfDayHours;
+
+        lateLoginTime.value =
+        settings.attendance.lateLoginTime;
+
+        graceMinutes.value =
+        settings.attendance.graceMinutes;
+
+        minOtMinutes.value =
+        settings.attendance.minOtMinutes;
+
+        currency.value =
+        settings.payroll.currency;
+
+        weekOffRule.value =
+        settings.payroll.weekOffRule;
+
+        lopEnabled.checked =
+        settings.payroll.lopEnabled;
 
         darkModeToggle.checked =
-            true;
-    }
+        settings.appearance.darkMode;
 
-    else{
-
-        document.body
-        .classList.remove(
-            'dark-mode'
-        );
-    }
-
-    /* Compact Sidebar */
-
-    if(
-        settingsData.compactSidebar
-    ){
+        toastToggle.checked =
+        settings.appearance.toastNotifications;
 
         compactSidebarToggle.checked =
-            true;
+        settings.appearance.compactSidebar;
+    }
 
-        document.body
-        .classList.add(
-            'compact-sidebar'
+    function save(){
+
+        Storage.set(
+            CONFIG.KEYS.SETTINGS,
+            settings
+        );
+
+        Utils.toast(
+            'Settings Saved',
+            'success'
         );
     }
 
-    else{
+    saveProfileBtn.onclick = () => {
 
-        document.body
-        .classList.remove(
-            'compact-sidebar'
-        );
-    }
-}
+        settings.profile = {
 
+            adminName:
+            adminName.value,
 
-/* =========================
-   Save Settings
-========================= */
+            adminEmail:
+            adminEmail.value,
 
-saveSettingsBtn
-?.addEventListener(
+            companyName:
+            companyName.value,
 
-    'click',
+            companyLogo:
+            settings.profile.companyLogo
+        };
 
-    saveSettings
-);
+        save();
+    };
 
-function saveSettings(){
+    saveAttendanceBtn.onclick = () => {
 
-    if(
+        settings.attendance = {
 
-        password.value !==
+            fullDayHours:
+            Number(fullDayHours.value),
 
-        confirmPassword.value
+            halfDayHours:
+            Number(halfDayHours.value),
 
-    ){
+            lateLoginTime:
+            lateLoginTime.value,
 
-        showToast(
+            graceMinutes:
+            Number(graceMinutes.value),
 
-            'Passwords do not match',
+            minOtMinutes:
+            Number(minOtMinutes.value)
+        };
 
-            'error'
-        );
+        save();
+    };
 
-        return;
-    }
+    savePayrollBtn.onclick = () => {
 
-    settingsData = {
+        settings.payroll = {
 
-        username:
-            username.value,
-
-        email:
-            email.value,
-
-        password:
-            password.value,
-
-        theme:
-
-            darkModeToggle.checked
-
-            ?
-
-            'dark'
-
-            :
-
-            'light',
-
-        compactSidebar:
-
-            compactSidebarToggle.checked,
-
-        workingHours:
-            Number(
-                workingHours.value
-            ),
-
-        otLimit:
-            Number(
-                otLimit.value
-            ),
-
-        currency:
+            currency:
             currency.value,
 
-        profileImage:
-            profilePreview.src
+            weekOffRule:
+            weekOffRule.value,
+
+            lopEnabled:
+            lopEnabled.checked
+        };
+
+        save();
     };
 
-    Storage.set(
+    saveAppearanceBtn.onclick = () => {
 
-        CONFIG.KEYS.SETTINGS,
+        settings.appearance = {
 
-        settingsData
+            darkMode:
+            darkModeToggle.checked,
+
+            toastNotifications:
+            toastToggle.checked,
+
+            compactSidebar:
+            compactSidebarToggle.checked
+        };
+
+        save();
+    };
+
+    savePasswordBtn.onclick = () => {
+
+        if(
+            newPassword.value !==
+            confirmPassword.value
+        ){
+
+            Utils.toast(
+                'Passwords do not match',
+                'error'
+            );
+
+            return;
+        }
+
+        Utils.toast(
+            'Password Updated',
+            'success'
+        );
+    };
+
+});
+
+resetSettingsBtn.onclick = () => {
+
+    localStorage.removeItem(
+        CONFIG.KEYS.SETTINGS
     );
 
-    /* Update Profile */
-
-    document
-    .getElementById(
-        'profileName'
-    )
-    .innerText =
-
-    settingsData.username;
-
-    showToast(
-
-        'Settings Saved',
-
+    Utils.toast(
+        'Settings Reset',
         'success'
     );
-}
 
-/* =========================
-   Dark Mode
-========================= */
-
-darkModeToggle
-?.addEventListener(
-
-    'change',
-
-    () => {
-
-        document.body
-        .classList.toggle(
-
-            'dark-mode',
-
-            darkModeToggle.checked
-        );
-    }
-);
-
-
-/* =========================
-   Compact Sidebar
-========================= */
-
-compactSidebarToggle
-?.addEventListener(
-
-    'change',
-
-    () => {
-
-        document.body
-        .classList.toggle(
-
-            'compact-sidebar',
-
-            compactSidebarToggle.checked
-        );
-    }
-);
-
-
-/* =========================
-   Profile Upload
-========================= */
-
-profileUpload
-?.addEventListener(
-
-    'change',
-
-    uploadProfileImage
-);
-
-function uploadProfileImage(e){
-
-    const file =
-
-        e.target.files[0];
-
-    if(
-        !file
-    ) return;
-
-    const reader =
-
-        new FileReader();
-
-    reader.onload =
-    function(event){
-
-        profilePreview.src =
-
-            event.target.result;
-    };
-
-    reader.readAsDataURL(
-        file
-    );
-}
-
-
-/* =========================
-   Toast
-========================= */
-
-function showToast(
-    message,
-    type
-){
-
-    const toast =
-
-    document.createElement(
-        'div'
-    );
-
-    toast.className =
-
-        `toast ${type}`;
-
-    toast.innerText =
-        message;
-
-    document.body
-    .appendChild(
-        toast
-    );
-
-    setTimeout(
-        () => {
-
-        toast.classList.add(
-            'show'
-        );
-
-    },100);
-
-    setTimeout(
-        () => {
-
-        toast.classList.remove(
-            'show'
-        );
-
-        setTimeout(
-            () => {
-
-            toast.remove();
-
-        },300);
-
-    },2500);
-}
-
-
-/* =========================
-   Toast Style
-========================= */
-
-const style =
-
-document.createElement(
-    'style'
-);
-
-style.innerHTML = `
-
-.toast{
-
-    position:fixed;
-
-    top:30px;
-    right:30px;
-
-    padding:16px 24px;
-
-    border-radius:16px;
-
-    color:white;
-
-    font-size:14px;
-    font-weight:500;
-
-    transform:
-        translateX(120%);
-
-    transition:.35s;
-
-    z-index:9999;
-}
-
-.toast.show{
-
-    transform:
-        translateX(0);
-}
-
-.toast.success{
-
-    background:#22c55e;
-}
-
-.toast.error{
-
-    background:#ef4444;
-}
-`;
-
-document.head.appendChild(
-    style
-);
-
-
-/* =========================
-   Initial Load
-========================= */
-
-loadSettings();
-
-const payrollSettings = Storage.get(CONFIG.KEYS.PAYROLL_SETTINGS)||{holidayOTMultiplier:2,weekOffRule:'double_ot',lopEnabled:true};
-document.getElementById('weekOffRule') && (document.getElementById('weekOffRule').value=payrollSettings.weekOffRule);
-document.getElementById('lopEnabled') && (document.getElementById('lopEnabled').checked=payrollSettings.lopEnabled);
-document.getElementById('savePayrollRulesBtn')?.addEventListener('click',()=>{
- const data={holidayOTMultiplier:2,weekOffRule:document.getElementById('weekOffRule').value,lopEnabled:document.getElementById('lopEnabled').checked};
- Storage.set(CONFIG.KEYS.PAYROLL_SETTINGS,data);
- showToast('Payroll rules saved','success');
-});
+    location.reload();
+};

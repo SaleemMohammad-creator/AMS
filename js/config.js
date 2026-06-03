@@ -41,8 +41,7 @@ const CONFIG = {
 
     EMPLOYEE:{
 
-        PREFIX:
-            'CS',
+        PREFIX:'CSTL',
 
         RANDOM_DIGITS:
             4

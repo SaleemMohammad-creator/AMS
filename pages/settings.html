@@ -7,319 +7,244 @@
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+        content="width=device-width, initial-scale=1.0">
 
-    <title>
-        Settings | AMS
-    </title>
-<link rel="icon" type="image/png" href="../assets/images/favicon.png">
-
-
-    <!-- CSS -->
+    <title>AMS - Settings</title>
 
     <link
         rel="stylesheet"
-        href="../css/sidebar.css"
-    >
+        href="../css/sidebar.css">
 
     <link
         rel="stylesheet"
-        href="../css/settings.css"
-    >
-
-    <!-- Font Awesome -->
+        href="../css/settings.css">
 
     <link
         rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 </head>
 
 <body>
 
-    <!-- Sidebar -->
+    <div id="sidebar-container"></div>
 
-    <div id="sidebar-container">
+<main class="main-content">
+
+<div class="settings-page">
+
+    <div class="page-header">
+        <h2>Settings</h2>
+        <p>Manage system preferences</p>
     </div>
 
-    <!-- Main -->
+    <!-- Profile -->
 
-    <main class="main-content">
+    <div class="settings-card">
 
-        <!-- Header -->
-
-        <div class="settings-header">
-
-            <div>
-
-                <h1>
-                    Settings
-                </h1>
-
-                <p>
-                    Manage AMS preferences and system configuration
-                </p>
-
-            </div>
-
-        </div>
-
-        <!-- Grid -->
+        <h3>Profile Settings</h3>
 
         <div class="settings-grid">
 
-            <!-- Profile -->
-
-            <div class="settings-card">
-
-                <div class="card-title">
-
-                    <i
-                        class="fa-solid fa-user-gear"
-                    ></i>
-
-                    <h3>
-                        Profile Settings
-                    </h3>
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>
-                        Admin Name
-                    </label>
-
-                    <input
-                        type="text"
-                        id="adminName"
-                        placeholder="Admin name"
-                    >
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>
-                        Email
-                    </label>
-
-                    <input
-                        type="email"
-                        id="adminEmail"
-                        placeholder="Email"
-                    >
-
-                </div>
-
-                <button
-                    class="save-btn"
-                    id="saveProfileBtn"
-                >
-
-                    Save Profile
-
-                </button>
-
+            <div class="field">
+                <label>Admin Name</label>
+                <input type="text" id="adminName">
             </div>
 
-            <!-- Appearance -->
-
-            <div class="settings-card">
-
-                <div class="card-title">
-
-                    <i
-                        class="fa-solid fa-palette"
-                    ></i>
-
-                    <h3>
-                        Appearance
-                    </h3>
-
-                </div>
-
-                <div class="toggle-row">
-
-                    <span>
-                        Dark Mode
-                    </span>
-
-                    <label class="switch">
-
-                        <input
-                            type="checkbox"
-                            id="darkModeToggle"
-                        >
-
-                        <span
-                            class="slider"
-                        ></span>
-
-                    </label>
-
-                </div>
-
-                <div class="toggle-row">
-
-                    <span>
-                        Toast Notifications
-                    </span>
-
-                    <label class="switch">
-
-                        <input
-                            type="checkbox"
-                            id="toastToggle"
-                            checked
-                        >
-
-                        <span
-                            class="slider"
-                        ></span>
-
-                    </label>
-
-                </div>
-
+            <div class="field">
+                <label>Admin Email</label>
+                <input type="email" id="adminEmail">
             </div>
 
-            <!-- Attendance Rules -->
-
-            <div class="settings-card">
-
-                <div class="card-title">
-
-                    <i
-                        class="fa-solid fa-clock"
-                    ></i>
-
-                    <h3>
-                        Attendance Rules
-                    </h3>
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>
-                        Full Day Hours
-                    </label>
-
-                    <input
-                        type="text"
-                        id="fullDayHours"
-                        value="8h 15m"
-                    >
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>
-                        Late Login Time
-                    </label>
-
-                    <input
-                        type="time"
-                        id="lateLoginTime"
-                        value="09:30"
-                    >
-
-                </div>
-
-                <button
-                    class="save-btn"
-                    id="saveRulesBtn"
-                >
-
-                    Save Rules
-
-                </button>
-
+            <div class="field full">
+                <label>Company Name</label>
+                <input type="text" id="companyName">
             </div>
 
-            
-            <!-- Payroll Rules -->
-            <div class="settings-card">
-                <div class="card-title"><i class="fa-solid fa-money-check-dollar"></i><h3>Payroll Rules</h3></div>
-                <div class="form-group"><label>Holiday Worked</label><input type="text" value="2x OT" disabled></div>
-                <div class="form-group"><label>Week-Off Rule</label><select id="weekOffRule"><option value="double_ot">2x OT</option><option value="comp_off">Comp Off</option></select></div>
-                <div class="toggle-row"><span>Enable LOP</span><label class="switch"><input type="checkbox" id="lopEnabled" checked><span class="slider"></span></label></div>
-                <button class="save-btn" id="savePayrollRulesBtn">Save Payroll Rules</button>
-            </div>
-
-            <!-- Security -->
-
-            <div class="settings-card">
-
-                <div class="card-title">
-
-                    <i
-                        class="fa-solid fa-shield-halved"
-                    ></i>
-
-                    <h3>
-                        Security
-                    </h3>
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>
-                        New Password
-                    </label>
-
-                    <input
-                        type="password"
-                        id="newPassword"
-                    >
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>
-                        Confirm Password
-                    </label>
-
-                    <input
-                        type="password"
-                        id="confirmPassword"
-                    >
-
-                </div>
-
-                <button
-                    class="save-btn"
-                    id="savePasswordBtn"
-                >
-
-                    Update Password
-
-                </button>
-
+            <div class="field full">
+                <label>Company Logo</label>
+                <input type="file" id="companyLogo">
             </div>
 
         </div>
 
-    </main>
+        <button id="saveProfileBtn">
+            Save Profile
+        </button>
 
-    <!-- Toast -->
+    </div>
 
-    <div id="toastContainer"></div>
+    <!-- Attendance -->
 
-    <!-- JS -->
+    <div class="settings-card">
+
+        <h3>Attendance Rules</h3>
+
+        <div class="settings-grid">
+
+            <div class="field">
+                <label>Full Day Hours</label>
+                <input type="number" id="fullDayHours">
+            </div>
+
+            <div class="field">
+                <label>Half Day Hours</label>
+                <input type="number" id="halfDayHours">
+            </div>
+
+            <div class="field">
+                <label>Late Login Time</label>
+                <input type="time" id="lateLoginTime">
+            </div>
+
+            <div class="field">
+                <label>Grace Minutes</label>
+                <input type="number" id="graceMinutes">
+            </div>
+
+            <div class="field">
+                <label>Minimum OT Minutes</label>
+                <input type="number" id="minOtMinutes">
+            </div>
+
+        </div>
+
+        <button id="saveAttendanceBtn">
+            Save Attendance Rules
+        </button>
+
+    </div>
+
+    <!-- Payroll -->
+
+    <div class="settings-card">
+
+        <h3>Payroll Settings</h3>
+
+        <div class="settings-grid">
+
+            <div class="field">
+                <label>Currency</label>
+                <select id="currency">
+                    <option value="INR">INR</option>
+                    <option value="USD">USD</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Week Off</label>
+                <select id="weekOffRule">
+                    <option>Sunday</option>
+                    <option>Saturday</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="toggle-row">
+
+            <label>
+                <input
+                    type="checkbox"
+                    id="lopEnabled">
+
+                Enable LOP
+            </label>
+
+        </div>
+
+        <button id="savePayrollBtn">
+            Save Payroll Settings
+        </button>
+
+    </div>
+
+    <!-- Appearance -->
+
+    <div class="settings-card">
+
+        <h3>Appearance</h3>
+
+        <div class="toggle-row">
+
+            <label>
+                <input
+                    type="checkbox"
+                    id="darkModeToggle">
+
+                Dark Mode
+            </label>
+
+        </div>
+
+        <div class="toggle-row">
+
+            <label>
+                <input
+                    type="checkbox"
+                    id="toastToggle">
+
+                Toast Notifications
+            </label>
+
+        </div>
+
+        <div class="toggle-row">
+
+            <label>
+                <input
+                    type="checkbox"
+                    id="compactSidebarToggle">
+
+                Compact Sidebar
+            </label>
+
+        </div>
+
+        <button id="saveAppearanceBtn">
+            Save Appearance
+        </button>
+
+    </div>
+
+    <!-- Security -->
+
+    <div class="settings-card">
+
+        <h3>Security</h3>
+
+        <div class="settings-grid">
+
+            <div class="field">
+                <label>New Password</label>
+                <input
+                    type="password"
+                    id="newPassword">
+            </div>
+
+            <div class="field">
+                <label>Confirm Password</label>
+                <input
+                    type="password"
+                    id="confirmPassword">
+            </div>
+
+        </div>
+
+        <button id="savePasswordBtn">
+            Update Password
+        </button>
+
+    </div>
+
+</div>
+
+</main>
 
     <script src="../js/config.js"></script>
     <script src="../js/storage.js"></script>
     <script src="../js/utils.js"></script>
-    <script src="../js/permissions.js"></script>
-<script src="../js/sidebar.js"></script>
-    <script src="../js/toast.js"></script>
+    <script src="../js/sidebar.js"></script>
     <script src="../js/settings.js"></script>
 
 </body>

@@ -27,20 +27,10 @@ const defaultUsers = [
    Initialize Users
 ========================= */
 
-if(
+const users = Storage.get(CONFIG.KEYS.USERS, []);
 
-    !Storage.get(
-        CONFIG.KEYS.USERS
-    ).length
-
-){
-
-    Storage.set(
-
-        CONFIG.KEYS.USERS,
-
-        defaultUsers
-    );
+if(users.length === 0){
+    Storage.set(CONFIG.KEYS.USERS, defaultUsers);
 }
 
 /* =========================
@@ -90,9 +80,7 @@ function loginUser(e){
 
     const usersData =
 
-    Storage.get(
-        CONFIG.KEYS.USERS
-    );
+    Storage.get(CONFIG.KEYS.USERS, []);
 
     const validUser =
 

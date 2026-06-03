@@ -10,13 +10,13 @@ let attendanceData =
 
 Storage.get(
     CONFIG.KEYS.ATTENDANCE
-);
+) || [];
 
 let staffData =
 
 Storage.get(
     CONFIG.KEYS.STAFF
-);
+) || [];
 
 
 /* =========================
@@ -102,7 +102,7 @@ function populateEmployees(){
     </option>
     `;
 
-    staffData.forEach(
+    staffData.filter(emp => !emp.status || emp.status === 'Active').forEach(
         emp => {
 
         employeeSelect.innerHTML +=
@@ -980,8 +980,7 @@ function renderTable(){
             </td>
 
             <td>
-                ${r.ot || 0}
-                hrs
+                ${Utils.formatHours(Number(r.ot||0))}
             </td>
 
             <td>
@@ -1128,7 +1127,7 @@ function(index){
 
     if(!r) return;
 
-    alert(
+    Utils.toast(
 
 `Employee : ${r.name}
 Date : ${r.date}

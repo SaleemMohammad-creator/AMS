@@ -23,13 +23,10 @@ document.addEventListener(
 
     const leaves =
         Storage.get(
-            CONFIG.KEYS.LEAVE
+            CONFIG.KEYS.LEAVE_REQUESTS
         ) || [];
 
-    const ot =
-        Storage.get(
-            CONFIG.KEYS.OT
-        ) || [];
+    const ot = [];
 
     /* =========================
        KPI CALCULATIONS
@@ -512,7 +509,7 @@ if(filterBtn){
    if(window.Utils && Utils.toast){
       Utils.toast(d ? 'Reports filtered for '+d : 'Please select a date','info');
    } else {
-      alert(d ? 'Reports filtered for '+d : 'Please select a date');
+      Utils.toast(d ? 'Reports filtered for '+d : 'Please select a date');
    }
  });
 }

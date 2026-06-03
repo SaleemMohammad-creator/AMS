@@ -66,10 +66,10 @@ body{
 ==================== */
 
 .main-content{
-
-    margin-left:260px;
+    margin-left:290px;
     min-height:100vh;
-    padding:35px;
+    padding:24px;
+    transition:.3s;
 }
 
 /* ====================

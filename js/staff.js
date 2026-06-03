@@ -63,9 +63,7 @@ document.getElementById(
 
 let staffData =
 
-Storage.get(
-    CONFIG.KEYS.STAFF
-);
+Storage.get(CONFIG.KEYS.STAFF, []);
 
 let editIndex =
     null;

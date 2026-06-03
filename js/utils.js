@@ -8,37 +8,12 @@ const Utils = {
        Employee ID Generator
     ========================= */
 
-    generateEmployeeId(
-        staffData = []
-    ){
-
+    generateEmployeeId(staffData = []){
         let id;
-
         do{
-
-            id =
-                CONFIG.EMPLOYEE.PREFIX +
-
-                Math.floor(
-
-                    1000 +
-
-                    Math.random() *
-
-                    9000
-
-                );
-
-        }while(
-
-            staffData.some(
-
-                emp =>
-
-                    emp.id === id
-            )
-        );
-
+            const randomNumber = Math.floor(100000 + Math.random()*900000);
+            id = `${CONFIG.EMPLOYEE.PREFIX}${randomNumber}`;
+        }while(staffData.some(emp => emp.id === id));
         return id;
     },
 
@@ -107,18 +82,16 @@ const Utils = {
        Currency
     ========================= */
 
-    formatCurrency(
-        amount
-    ){
+    formatCurrency(amount){
 
-        return
-        '₹' +
+        return '₹' + Number(amount || 0).toLocaleString('en-IN');
+    },
 
-        Number(
-            amount
-        ).toLocaleString(
-            'en-IN'
-        );
+    exportCSV(filename,rows){
+        const csv=rows.map(r=>r.join(',')).join('\n');
+        const blob=new Blob([csv],{type:'text/csv'});
+        const a=document.createElement('a');
+        a.href=URL.createObjectURL(blob);a.download=filename;a.click();
     },
 
     /* =========================
@@ -137,12 +110,22 @@ const Utils = {
         return 'ID' + Date.now() + Math.floor(Math.random()*1000);
     },
 
+    formatHours(hours){
+        if(!hours || hours<=0) return '0 min';
+        const totalMinutes=Math.round(Number(hours)*60);
+        const hrs=Math.floor(totalMinutes/60);
+        const mins=totalMinutes%60;
+        if(hrs && mins) return `${hrs} hr ${mins} min`;
+        if(hrs) return `${hrs} hr`;
+        return `${mins} min`;
+    },
+
     /* Toast */
     toast(message,type='info'){
         if(typeof showToast==='function'){
             showToast(message,type);
         }else{
-            alert(message);
+            console.warn(message);
         }
     }
 

@@ -64,20 +64,9 @@ body{
 ========================= */
 
 .main-content{
-
-    margin-left:260px;
-
-    width:
-    calc(
-        100% - 260px
-    );
-
+    margin-left:290px;
     min-height:100vh;
-
-    padding:
-    34px
-    36px;
-
+    padding:24px;
     transition:.3s;
 }
 

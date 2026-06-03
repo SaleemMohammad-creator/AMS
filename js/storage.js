@@ -4,76 +4,29 @@
 
 const Storage = {
 
-    /* =========================
-       Get
-    ========================= */
-
-    get(key){
-
+    get(key, defaultValue = null){
         try{
-
-            return JSON.parse(
-                localStorage.getItem(
-                    key
-                )
-            ) || [];
-
+            const value = localStorage.getItem(key);
+            return value ? JSON.parse(value) : defaultValue;
         }catch(error){
-
-            console.error(
-                'Storage GET Error:',
-                error
-            );
-
-            return [];
+            console.error('Storage GET Error:', error);
+            return defaultValue;
         }
     },
 
-    /* =========================
-       Set
-    ========================= */
-
-    set(
-        key,
-        value
-    ){
-
+    set(key,value){
         try{
-
-            localStorage.setItem(
-                key,
-                JSON.stringify(
-                    value
-                )
-            );
-
+            localStorage.setItem(key, JSON.stringify(value));
         }catch(error){
-
-            console.error(
-                'Storage SET Error:',
-                error
-            );
+            console.error('Storage SET Error:', error);
         }
     },
-
-    /* =========================
-       Remove
-    ========================= */
 
     remove(key){
-
-        localStorage.removeItem(
-            key
-        );
+        localStorage.removeItem(key);
     },
 
-    /* =========================
-       Clear
-    ========================= */
-
     clear(){
-
         localStorage.clear();
     }
-
 };
